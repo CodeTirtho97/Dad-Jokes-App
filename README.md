@@ -1,6 +1,6 @@
 # DAD JOKES APP
 
-### React App made involving API calls to dad-jokes api endpoint & using localStorage functionality. The app is currently deployed in Heroku.
+React App made involving API calls to dad-jokes api endpoint & using localStorage functionality. The app is currently deployed in Heroku.
 
 ##### Check Website: https://dadjokes-app.herokuapp.com/
 
