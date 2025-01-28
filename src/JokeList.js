@@ -6,97 +6,97 @@ import "./JokeList.css";
 
 class JokeList extends Component {
   static defaultProps = {
-    numJokesToGet: 10,
+    numJokesToGet: 4,
   };
+
   constructor(props) {
     super(props);
     this.state = {
-      jokes: JSON.parse(window.localStorage.getItem("jokes") || "[]"),
+      jokes: [],
+      pinnedJoke: null,
+      favorites: [],
       loading: false,
     };
-    this.seenJokes = new Set(this.state.jokes.map((j) => j.text));
-    console.log(this.seenJokes);
-    this.handleClick = this.handleClick.bind(this);
   }
-  componentDidMount() {
-    if (this.state.jokes.length === 0) {
-      this.getJokes();
-    }
-  }
+
   async getJokes() {
     try {
+      this.setState({ loading: true });
+
       let jokes = [];
-      while (jokes.length < this.props.numJokesToGet) {
-        let res = await axios.get("https://icanhazdadjoke.com/", {
+      for (let i = 0; i < this.props.numJokesToGet; i++) {
+        const response = await axios.get("https://icanhazdadjoke.com/", {
           headers: { Accept: "application/json" },
         });
-        let newJoke = res.data.joke;
-        if (!this.seenJokes.has(newJoke)) {
-          jokes.push({ id: uuid(), text: newJoke, votes: 0 });
-        } else {
-          console.log("Found a duplicate joke!!");
-          console.log(newJoke);
-        }
+        jokes.push({ id: uuid(), text: response.data.joke });
       }
-      this.setState(
-        (st) => ({
-          loading: false,
-          jokes: [...st.jokes, ...jokes],
-        }),
-        () =>
-          window.localStorage.setItem("jokes", JSON.stringify(this.state.jokes))
-      );
-    } catch (e) {
-      alert(e);
+
+      setTimeout(() => {
+        this.setState({ jokes, loading: false });
+      }, 1000); // Simulate loading time
+    } catch (error) {
+      console.error("Error fetching jokes:", error);
       this.setState({ loading: false });
     }
   }
-  handleVote(id, delta) {
-    this.setState(
-      (st) => ({
-        jokes: st.jokes.map((j) =>
-          j.id === id ? { ...j, votes: j.votes + delta } : j
-        ),
-      }),
-      () =>
-        window.localStorage.setItem("jokes", JSON.stringify(this.state.jokes))
-    );
-  }
-  handleClick() {
-    this.setState({ loading: true }, this.getJokes);
-  }
-  render() {
-    if (this.state.loading) {
-      return (
-        <div className="JokeList-spinner">
-          <i className="far fa-8x fa-laugh fa-spin" />
-          <h1 className="JokeList-title">Loading</h1>
-        </div>
-      );
+
+  clearJokeList() {
+    if (this.state.pinnedJoke) {
+      alert("Unpin the joke before clearing the list.");
+      return;
     }
-    let jokes = this.state.jokes.sort((a, b) => b.votes - a.votes);
+    this.setState({ jokes: [] });
+  }
+
+  render() {
+    const { jokes, pinnedJoke, loading } = this.state;
+
     return (
       <div className="JokeList">
         <div className="JokeList-sidebar">
           <h1 className="JokeList-title">
-            <span>Dad</span> Jokes!
+            <span>Dad</span> Jokes
           </h1>
-          <img
-            src="https://assets.dryicons.com/uploads/icon/svg/8927/0eb14c71-38f2-433a-bfc8-23d9c99b3647.svg"
-            alt="icon"
-          />
-          <button className="JokeList-getmore" onClick={this.handleClick}>
-            Fetch Jokes
+          <button
+            className="JokeList-getmore"
+            onClick={() => this.getJokes()}
+            disabled={loading}
+          >
+            {loading ? "Fetching..." : "Fetch Jokes"}
+          </button>
+          <button
+            className="JokeList-clear"
+            onClick={() => this.clearJokeList()}
+            disabled={jokes.length === 0} // Disabled if joke list is empty
+          >
+            🧘‍♂️ Clear Mind!
           </button>
         </div>
-        <div className="JokeList-jokes">
-          {jokes.map((j) => (
+
+        {loading && <div className="loading-bar"></div>}
+
+        {pinnedJoke && (
+          <div className="JokeList-pinned">
+            <h2>📌 Pinned Joke</h2>
             <Joke
-              key={j.id}
-              votes={j.votes}
-              text={j.text}
-              upvote={() => this.handleVote(j.id, 1)}
-              downvote={() => this.handleVote(j.id, -1)}
+              key={pinnedJoke.id}
+              text={pinnedJoke.text}
+              unpin={() => this.setState({ pinnedJoke: null })}
+            />
+          </div>
+        )}
+
+        <div className="JokeList-jokes">
+          {jokes.map((joke) => (
+            <Joke
+              key={joke.id}
+              text={joke.text}
+              remove={() =>
+                this.setState((st) => ({
+                  jokes: st.jokes.filter((j) => j.id !== joke.id),
+                }))
+              }
+              pin={() => this.setState({ pinnedJoke: joke })}
             />
           ))}
         </div>

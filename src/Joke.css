@@ -1,110 +1,72 @@
+/* Joke Container */
 .Joke {
   display: flex;
-  border-bottom: 2px solid #eee;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-weight: 400;
+  background: #f8f8f8;
   padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  text-align: center;
 }
 
+.Joke:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Joke Text */
+.Joke-text {
+  font-size: 1.2rem;
+  color: #333;
+}
+
+/* Joke Buttons */
 .Joke-buttons {
   display: flex;
-  margin-right: 1rem;
-  align-items: center;
-  justify-content: center;
-  width: 15%;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
 }
 
-.Joke-text {
-  width: 75%;
-  font-size: 1.2rem;
-}
-
-.Joke-votes {
-  width: 50px;
-  height: 50px;
-  line-height: 50px;
-  border-radius: 50%;
-  text-align: center;
-  font-size: 20px;
-  font-weight: 300;
-  border: 3px solid red;
-  box-shadow: 0 10px 38px rgba(0, 0, 0, 0.2), 0 10px 12px rgba(0, 0, 0, 0.1);
-}
-
-.fa-arrow-up,
-.fa-arrow-down {
-  font-size: 1.5rem;
-  margin: 10px;
+button {
+  background: #6200ea;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+  font-size: 0.85rem;
+  font-weight: bold;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: 0.3s;
 }
 
-.fa-arrow-up:hover {
-  animation-name: move-up;
-  animation-duration: 0.7s;
-  animation-timing-function: ease-out;
-  color: #8bc34a;
+button:hover {
+  background: #3700b3;
 }
 
-@keyframes move-up {
-  0%,
-  50%,
-  100% {
-    transform: translateY(0);
-  }
-  25%,
-  75% {
-    transform: translateY(-3px);
-  }
+button.favorite {
+  background: #ffde03;
+  color: #333;
 }
 
-.fa-arrow-down:hover {
-  animation-name: move-down;
-  animation-duration: 0.7s;
-  animation-timing-function: ease-out;
-  color: #f44336;
-}
-@keyframes move-down {
-  0%,
-  50%,
-  100% {
-    transform: translateY(0);
-  }
-  25%,
-  75% {
-    transform: translateY(3px);
-  }
+button.favorite:hover {
+  background: #ffc107;
 }
 
-.Joke-smiley {
-  font-size: 3rem;
-  margin-left: auto;
-  border-radius: 50%;
-  box-shadow: 0 10px 38px rgba(0, 0, 0, 0.2), 0 10px 12px rgba(0, 0, 0, 0.1);
+button.copy {
+  background: #00c853;
 }
 
-.Joke-smiley:hover {
-  animation-name: spin;
-  animation-duration: 0.7s;
-  animation-timing-function: ease-in-out;
-  animation-delay: 0s;
+button.copy:hover {
+  background: #009624;
 }
 
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  30% {
-    transform: rotate(20deg);
-  }
-  60% {
-    transform: rotate(0deg);
-  }
-  80% {
-    transform: rotate(10deg);
-  }
-  100% {
-    transform: rotate(0deg);
-  }
+button.remove {
+  background: #ff3333;
+}
+
+button.remove:hover {
+  background: #cc0000;
 }
