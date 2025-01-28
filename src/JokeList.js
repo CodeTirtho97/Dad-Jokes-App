@@ -26,7 +26,8 @@ class JokeList extends Component {
       let jokes = [];
       for (let i = 0; i < this.props.numJokesToGet; i++) {
         const response = await axios.get("https://icanhazdadjoke.com/", {
-          headers: { Accept: "application/json" },
+          headers: { Accept: "application/json",
+            "User-Agent": "MyDadJokesApp (https://dad-jokes-v2-tirth.vercel.app)", },
         });
         jokes.push({ id: uuid(), text: response.data.joke });
       }
