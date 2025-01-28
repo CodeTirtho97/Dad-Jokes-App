@@ -16,7 +16,25 @@ class JokeList extends Component {
       pinnedJoke: null,
       favorites: [],
       loading: false,
+      adblockWarning: false,
     };
+  }
+
+  async componentDidMount() {
+    // Detect AdBlock by checking if request fails
+    try {
+      const testRequest = await axios.get("https://icanhazdadjoke.com/", {
+        headers: { Accept: "application/json" },
+      });
+      if (!testRequest.data) throw new Error("Blocked by AdBlocker");
+    } catch (error) {
+      this.setState({ adblockWarning: true });
+    }
+
+    // Fetch jokes initially
+    if (this.state.jokes.length === 0) {
+      await this.getJokes();
+    }
   }
 
   async getJokes() {
@@ -26,15 +44,17 @@ class JokeList extends Component {
       let jokes = [];
       for (let i = 0; i < this.props.numJokesToGet; i++) {
         const response = await axios.get("https://icanhazdadjoke.com/", {
-          headers: { Accept: "application/json",
-            "User-Agent": "MyDadJokesApp (https://dad-jokes-v2-tirth.vercel.app)", },
+          headers: {
+            Accept: "application/json",
+            "User-Agent": "MyDadJokesApp (https://dad-jokes-v2-tirth.vercel.app)",
+          },
         });
         jokes.push({ id: uuid(), text: response.data.joke });
       }
 
       setTimeout(() => {
         this.setState({ jokes, loading: false });
-      }, 1000); // Simulate loading time
+      }, 1000);
     } catch (error) {
       console.error("Error fetching jokes:", error);
       this.setState({ loading: false });
@@ -50,10 +70,16 @@ class JokeList extends Component {
   }
 
   render() {
-    const { jokes, pinnedJoke, loading } = this.state;
+    const { jokes, pinnedJoke, loading, adblockWarning } = this.state;
 
     return (
       <div className="JokeList">
+        {adblockWarning && (
+          <div className="AdblockWarning">
+            ⚠️ AdBlocker detected! Please disable AdBlocker for this app to work correctly.
+          </div>
+        )}
+
         <div className="JokeList-sidebar">
           <h1 className="JokeList-title">
             <span>Dad</span> Jokes
@@ -68,7 +94,7 @@ class JokeList extends Component {
           <button
             className="JokeList-clear"
             onClick={() => this.clearJokeList()}
-            disabled={jokes.length === 0} // Disabled if joke list is empty
+            disabled={jokes.length === 0}
           >
             🧘‍♂️ Clear Mind!
           </button>

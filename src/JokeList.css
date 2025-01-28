@@ -12,6 +12,34 @@
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
 }
 
+/* AdBlocker Warning */
+.AdblockWarning {
+  background: #ff3333;
+  color: #ffffff;
+  text-align: center;
+  padding: 12px;
+  font-weight: bold;
+  font-size: 1rem;
+  border-radius: 5px;
+  margin: 10px auto;
+  max-width: 90%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Fade-in Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
 /* Sidebar */
 .JokeList-sidebar {
   padding: 2rem;
